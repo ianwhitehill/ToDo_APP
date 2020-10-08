@@ -37,7 +37,17 @@ export default class App extends Component{
     <ToDoRow 
       key = {y.action}
       oneMappedItem = {y}
+      callback = {this.toggleToDoFunction}// callback is a keyword allowwing 2 way data flow
     />);
+
+      // this below is the  call back function fo the to do row component
+      //this function gets the value for object that is passed into the call back prop of <ToDoRow>. Thiss passed data is being called my toggled item 
+      // flipping the done prop of the todo item to true to false or false to true
+      //  When setState is invoked, React will make a new object with the changes.  Under the hood React will compare the new object with the DOM version of the object.  If there is a difference between those 2 objects then the DOM will get re-drawn (NOT a reload) and then we see the changes.
+ 
+  toggleToDoFunction = (myToggledItem) => this.setState({
+    todoItems: this.state.todoItems.map( x => x.action === myToggledItem.action ? {...x, done: !x.done} : x)
+  });
 
   render = () => 
   <div>
