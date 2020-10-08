@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import './App.css';
 
 import {ToDoBanner} from './ToDoBannerFile';
+import {ToDoRow} from './ToDoRowFile';
 
 import 'bootstrap/dist/css/bootstrap.css';
 
@@ -28,6 +29,16 @@ export default class App extends Component{
     } //end of this.state 
   } //End of constructor
 
+  //Feature 3 
+  // list of items todo (not completed) so if done bool changes the item should toggle 
+  // function should desiplay rows  
+  todoTableRowsFunction = (statusOfTask) =>
+    this.state.todoItems.filter(x => x.done === statusOfTask).map( y =>
+    <ToDoRow 
+      key = {y.action}
+      oneMappedItem = {y}
+    />);
+
   render = () => 
   <div>
     {/* Features 1 & 2 */}
@@ -36,7 +47,30 @@ export default class App extends Component{
         userName = {this.state.userName}
         todoItems = {this.state.todoItems}
     /> 
+    {/* Features 3 & 4 */}
+    <table className="table table-striped tabler-border">
+      <thead>
+        <th>Description</th>
+        <th>Marked on Completion</th>
+      </thead>
+      <tbody>
+        {this.todoTableRowsFunction(false)}
+      </tbody>
+    </table>
 
+      <div className="bg-secondary text-white text-center p-2">
+      </div>
+
+      {/* Features 6 & 7 */}
+      <table className="table table-striped tabler-border">
+      <thead>
+        <th>Description</th>
+        <th>Completed</th>
+      </thead>
+        <tbody>
+        {this.todoTableRowsFunction(true)}
+        </tbody>
+      </table>   
   </div>
 
 }// End of class
