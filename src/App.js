@@ -5,6 +5,7 @@ import './App.css';
 import { ToDoBanner } from './ToDoBannerFile';
 import { ToDoRow } from './ToDoRowFile';
 import { VisibilityControl } from './VisibilityControlFile';
+import {ToDoCreater} from './ToDoCreaterFile';
 
 import 'bootstrap/dist/css/bootstrap.css';
 
@@ -49,7 +50,36 @@ export default class App extends Component {
 
   toggleToDoFunction = (myToggledItem) => this.setState({
     todoItems: this.state.todoItems.map(x => x.action === myToggledItem.action ? { ...x, done: !x.done } : x)
-  });
+  }, () => localStorage.setItem("storeTodos", JSON.stringify(this.state))
+  );
+
+  //  The createNewTodoCallback method below is the callback for the ToDoCreator component
+  //  The "newToDo" parameter passed into the createNewTodoCallback method below comes from where the callback it initiated from- which is in the createNewTodo method of the ToDoCreator Component
+
+  createNewToDoCallback = (newToDo) => {
+    //  The if block below checks if the newly created todo item is NOT already in the list of todos.  If it is NOT already in the list then it adds it as below.  If it is in the list already there is no else block so nothing happens - this is not to user friendly but.... :)
+    if (!this.state.todoItems.find(x => x.action === this.state.newToDo)){
+      this.setState({
+        todoItems: [
+          ...this.state.todoItems, {action: newToDo, done: false}
+        ] 
+        // By default every new todo should not be done- in other words it's done property should have a value of false.
+      }, () => localStorage.setItem("storeTodos", JSON.stringify(this.state))
+      ); // end setState
+    } // end IF
+  }
+
+  //  The componentDidMount method below is a built in react method to handle logic for when the app "mounts" or "loads"
+  //  The localStorage object is a React built in object that allows persistent local storage much like how cookies work
+  //  localStorage reference: https://programmingwithmosh.com/react/localstorage-react/
+
+    componentDidMount = () => {
+      let storedData = localStorage.getItem("storeTodos")
+      this.setState(
+        storedData != null ? JSON.parse(storedData) : {userName: "New User", todoItems: [
+          { action: "Move burn pile to firepit", done: false }], showCompleted: true}
+      );
+    }
 
   render = () =>
     <div>
@@ -59,6 +89,12 @@ export default class App extends Component {
         userName={this.state.userName}
         todoItems={this.state.todoItems}
       />
+
+      {/*Feature 5a*/}
+      <ToDoCreater 
+        callback = {this.createNewToDoCallback}
+      />
+
       {/* Features 3 & 4 */}
       <table className="table table-striped tabler-border">
         <thead>
